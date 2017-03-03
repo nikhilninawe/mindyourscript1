@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="myApp">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.4.2/angular.js"></script>
+<head>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <link rel="icon" href="http://getbootstrap.com/favicon.ico">
+  <title>Mind Your Scripts App</title>
+  <link href="http://getbootstrap.com/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!--<link href="http://getbootstrap.com/examples/signin/signin.css" rel="stylesheet">-->
+  <link rel="stylesheet"; href="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.css">
+  <script src="https://unpkg.com/ng-table@2.0.2/bundles/ng-table.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <div class="jumbotron" style="padding-bottom:0px;">
+    <h2>Mind Your Scripts!</h2>
+  </div>
+  <div ng-app="myApp" ng-controller="scriptsController">
+    <table ng-table="vm.tableParams" class="table" show-filter="true">
+      <tr ng-repeat="script in scripts">
+        <td title="'Name'" sortable="'name'">
+          {{script.name}}</td>
+        <td title="'Last Run Time'" sortable="'lastRunTime'">
+          {{script.lastRunTime}}</td>
+        <td>
+          <button ng-click="accept($index)"><strong>Show Last Result</strong></button>
+          <button ng-click="hide($index)"><strong>Hide Last Result</strong></button>
+          <p ng-show="showResult($index)"><strong>{{script.lastResponse}}</strong></p>
+        </td>
+        <!--<td title="'Last Response'" filter="{ lastResponse: 'text'}" sortable="'lastResponse'">-->
+          <!--{{script.lastResponse}}</td>-->
+      </tr>
+    </table>
+  </div>
+</div>
+<script>
+  var app = angular.module('myApp', ["ngTable"]);
+  app.controller('scriptsController', function($scope, $http) {
+     $http.get("http://localhost:8080/getJobDetail")
+             .then(function (response) {
+              console.log(response.data);
+              $scope.scripts = response.data;
+            });
+    //var show = false;
+    // $scope.scripts = [{"name" : "test1", "lastRunTime" : "2017-03-01 00:00:00", "lastResponse" : "d v vjhbfdh jdfdnfv jdbfiberiughibkkkj..", "show" : false},
+    //   {"name" : "test2", "lastRunTime" : "2017-03-02 00:00:00", "lastResponse" : "d v vjhbfdh jdfdnfv jdbfiberiughibkkkj..", "show" : false},
+    //   {"name" : "test2", "lastRunTime" : "2017-03-02 00:00:00", "lastResponse" : "d v vjhbfdh jdfdnfv jdbfiberiughibkkkj..", "show" : false},
+    //   {"name" : "test2", "lastRunTime" : "2017-03-02 00:00:00", "lastResponse" : "d v fnjkawefjkbrjhg jdfdnfv jdbfiberiughibkkkj..", "show" : false},
+    //   {"name" : "test2", "lastRunTime" : "2017-03-02 00:00:00", "lastResponse" : "d v bfnbanfbnb jdfdnfv jdbfiberiughibkkkj..", "show" : false},
+    //   {"name" : "test2", "lastRunTime" : "2017-03-02 00:00:00", "lastResponse" : "d v vjhbfdhbfjkbsfbsdj jdfdnfv jdbfiberiughibkkkj..", "show" : false},
+    //   {"name" : "test2", "lastRunTime" : "2017-03-02 00:00:00", "lastResponse" : "d v vjhbfdh jdfdnfv jdbfiberiughibkkkj..", "show" : false},
+    //   {"name" : "test2", "lastRunTime" : "2017-03-02 00:00:00", "lastResponse" : "d v vjhbfdh jdfdnfv jdbfiberiughibkkkj..", "show" : false}]
+    $scope.accept = function(idx){
+      var i = $scope.scripts[idx]; //select line -> hide ACCEPT/REFUSE BUTTON
+      console.log('value2 i:',i)
+      $scope.scripts[idx].show = true;
+    }
+    $scope.hide = function(idx){
+      var i = $scope.scripts[idx]; //select line -> hide ACCEPT/REFUSE BUTTON
+      console.log('value2 i:',i)
+      $scope.scripts[idx].show = false;
+    }
+    $scope.showResult = function(idx){
+      return  $scope.scripts[idx].show;
+    }
+  });
+</script>
+</body></html>
